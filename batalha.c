@@ -15,12 +15,20 @@ int main(void) {
     // 2) navios como vetores (tamanho 3). cada posição vale 3
     int navio_h[3] = {3, 3, 3};  // horizontal
     int navio_v[3] = {3, 3, 3};  // vertical
+    // NOVO: vou usar o mesmo valor para os diagonais também
+    int navio_d1[3] = {3, 3, 3}; // diagonal ↘
+    int navio_d2[3] = {3, 3, 3}; // diagonal ↙
 
     // 3) coordenadas (índice começa em 0)
     // horizontal: começa em (2,4) e vai pra direita
     // vertical:   começa em (5,7) e vai pra baixo
     int h_lin = 2, h_col = 4;
     int v_lin = 5, v_col = 7;
+
+    // diagonais tamanho 3
+    
+    int d1_lin = 0, d1_col = 0;  // escolhi canto sup-esq (não colide)
+    int d2_lin = 0, d2_col = 9;  // escolhi canto sup-dir (não colide)
 
     // 4) checo se o navio horizontal cabe e não bate em nada
     int ok = 1;
@@ -60,7 +68,45 @@ int main(void) {
         tab[v_lin + i][v_col] = navio_v[i];
     }
 
-    // 8) Formato que o professor apresentou no video
+    // validação e posicionamento dos DIAGONAIS
+
+    // 8) diagonal ↘ (cresce linha e coluna)
+    ok = 1;
+    if (d1_lin < 0 || (d1_lin + 3 - 1) >= 10 || d1_col < 0 || (d1_col + 3 - 1) >= 10) {
+        ok = 0; // sairia da borda
+    } else {
+        for (i = 0; i < 3; i++) {
+            if (tab[d1_lin + i][d1_col + i] != 0) ok = 0; // colisão
+        }
+    }
+    if (!ok) {
+        printf("ERRO no navio diagonal ↘ em (%d,%d)\n", d1_lin, d1_col);
+        return 0;
+    }
+    // posiciona diagonal ↘
+    for (i = 0; i < 3; i++) {
+        tab[d1_lin + i][d1_col + i] = navio_d1[i];
+    }
+
+    // 9) diagonal ↙ (cresce linha e diminui coluna)
+    ok = 1;
+    if (d2_lin < 0 || (d2_lin + 3 - 1) >= 10 || d2_col >= 10 || (d2_col - (3 - 1)) < 0) {
+        ok = 0; // sairia da borda
+    } else {
+        for (i = 0; i < 3; i++) {
+            if (tab[d2_lin + i][d2_col - i] != 0) ok = 0; // colisão?
+        }
+    }
+    if (!ok) {
+        printf("ERRO no navio diagonal ↙ em (%d,%d)\n", d2_lin, d2_col);
+        return 0;
+    }
+    // posiciona diagonal ↙
+    for (i = 0; i < 3; i++) {
+        tab[d2_lin + i][d2_col - i] = navio_d2[i];
+    }
+
+    // 10) Formato que o professor apresentou no video
     printf("TABULEIRO  BATALHA  NAVAL\n");
     printf("   A B C D E F G H I J\n");
     for (i = 0; i < 10; i++) {
